@@ -1,4 +1,3 @@
-#from sklearn.datasets import fetch_openml
 import torch
 from torchvision import datasets, transforms
 from sklearn.model_selection import train_test_split
