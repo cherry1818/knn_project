@@ -7,22 +7,28 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler
 from main import MyKNN
 
-def compare_knn_mnist():
 
+def compare_knn_mnist():
     # Wczytanie zbioru danych
     transform = transforms.Compose([transforms.ToTensor(), transforms.Lambda(lambda x: x.view(-1))])
     data = datasets.MNIST(root='./data', train=True, download=True, transform=transform)
-    
+
     # Konwersja danych
-    X = data.data.numpy()
+    X = data.data.view(data.data.size(0), -1).numpy()  # Flatten the images
     y = data.targets.numpy()
+
+    # Subsampling - Użyj mniejszej liczby próbek
+    subset_size = 10000  # Zamiast 60,000 próbek użyj 10,000
+    X = X[:subset_size]
+    y = y[:subset_size]
 
     # Normalizacja danych
     scaler = MinMaxScaler()
     X = scaler.fit_transform(X)
 
-    # Redukcja wymiarowości
-    pca = PCA(n_components=50)
+    # Redukcja wymiarowości - IncrementalPCA zamiast PCA
+    from sklearn.decomposition import IncrementalPCA
+    pca = IncrementalPCA(n_components=20)  # Użycie IncrementalPCA z 20 komponentami
     X_reduced = pca.fit_transform(X)
 
     # Podział danych na treningowe i testowe
@@ -41,6 +47,7 @@ def compare_knn_mnist():
     y_pred_sklearn = sklearn_knn.predict(X_test)
     accuracy_sklearn = accuracy_score(y_test, y_pred_sklearn)
     print(f"Dokładność KNN z biblioteki scikit-learn: {accuracy_sklearn:.2f}")
+
 
 if __name__ == "__main__":
     compare_knn_mnist()
