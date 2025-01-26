@@ -14,11 +14,11 @@ def compare_knn_mnist():
     data = datasets.MNIST(root='./data', train=True, download=True, transform=transform)
 
     # Konwersja danych
-    X = data.data.view(data.data.size(0), -1).numpy()  # Flatten the images
+    X = data.data.view(data.data.size(0), -1).numpy()
     y = data.targets.numpy()
 
-    # Subsampling - Użyj mniejszej liczby próbek
-    subset_size = 10000  # Zamiast 60,000 próbek użyj 10,000
+    # Subsampling
+    subset_size = 10000  
     X = X[:subset_size]
     y = y[:subset_size]
 
@@ -26,9 +26,9 @@ def compare_knn_mnist():
     scaler = MinMaxScaler()
     X = scaler.fit_transform(X)
 
-    # Redukcja wymiarowości - IncrementalPCA zamiast PCA
+    # Redukcja wymiarowości - IncrementalPCA 
     from sklearn.decomposition import IncrementalPCA
-    pca = IncrementalPCA(n_components=20)  # Użycie IncrementalPCA z 20 komponentami
+    pca = IncrementalPCA(n_components=20)  #IncrementalPCA z 20 komponentami
     X_reduced = pca.fit_transform(X)
 
     # Podział danych na treningowe i testowe
